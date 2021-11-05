@@ -35,16 +35,14 @@
   }
 
   .display {
+    padding-right: 10px;
     border: 1px solid #6E6E6E;
     height: 26%;
     width: 100%;
   }
 
   .result-process-display, .result-display {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding-right: 5px;
+    text-align: right;
     width: 100%;
     height: 50%;
   }
@@ -56,7 +54,7 @@
 
   .result-process-display {
     color: #6E6E6E;
-    font-size: 1em;
+    font-size: 1.5em;
   }
 
   .buttons-container {
@@ -82,11 +80,11 @@
     color: #ffffff;
   }
 
-  .numbers, .dot {
+  .numbers, .plus-minus {
     background-color: #060606;
   }
 
-  .operator {
+  .operator, .clear-buttons, .git-hub {
     background-color: #131212;
   }
 
@@ -94,7 +92,7 @@
     background-color: #611333;
   }
 
-  .numbers:hover, .operator:hover {
+  .numbers:hover, .operator:hover, .plus-minus:hover, .clear-buttons:hover, .git-hub:hover {
     background-color: #575656;
   }
 
