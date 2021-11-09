@@ -36,8 +36,8 @@ function clearScreenContent() {
 
 function displayNumber(number) {
     number.addEventListener('click', () => {
-        if (resultsDisplay.innerText === '0') {
-            resultsDisplay.innerText = '';
+        if (resultsDisplay.innerText[0] === '0') {
+            resultsDisplay.innerText = resultsDisplay.innerText.slice(1);
         }
         if (evaluatorTracker > 0) {
             clearAll();
@@ -61,7 +61,6 @@ function enableOperator() {
     });
 }
 
-
 function clearAll() {
     equalsBtn.disabled = false;
     resultProcessDisplay.innerText = '';
@@ -73,7 +72,7 @@ function clearAll() {
 }
 
 function clearEntry() {
-    resultsDisplay.innerText = '';
+    resultsDisplay.innerText = 0;
 }
 
 function backspace() {
@@ -96,30 +95,44 @@ function enableDot() {
 
 function activateOperator(operator) {
     operator.addEventListener('click', () => {
-        // if (operatorTracker > 2) {
-        //     operand1 = result;
-        //     operand2 = resultsDisplay.innerText;
-        //     result = operateDoubleOperand(operatorSign, operand1, operand2);
-        //     resultsDisplay.innerText = result;
-        //     resultProcessDisplay.innerText = ` ${resultsDisplay.innerText} ${operator.id}`;
-        // }
-        if (operatorTracker > 0) {
-            operand2 = Number(resultsDisplay.innerText);
-            resultsDisplay.innerText = operateDoubleOperand(operatorSign, operand1, operand2);
-            resultProcessDisplay.innerText = ` ${resultsDisplay.innerText} ${operator.id}`;
-            operand1 = resultsDisplay.innerText;
-            operatorSign = operator.id;
+        if (operator.classList.contains('single-operand')) {
+            useSingleOperand(operator);
         }
         else {
-            operand1 = Number(resultsDisplay.innerText);
-            operatorSign = operator.id;
-            resultProcessDisplay.innerText = `${operand1} ${operator.id}`;
-            resultsDisplay.innerText = '';
+            useDoubleOperand(operator);
         }
-        operator.disabled = true;
-        operatorTracker += 1;
-        enableDot();
     });
+}
+
+function useDoubleOperand(operator) {
+    if (operatorTracker > 0) {
+        operand2 = Number(resultsDisplay.innerText);
+        resultsDisplay.innerText = operateDoubleOperand(operatorSign, operand1, operand2);
+        resultProcessDisplay.innerText = ` ${resultsDisplay.innerText} ${operator.id}`;
+        operand1 = resultsDisplay.innerText;
+        operatorSign = operator.id;
+    }
+    else {
+        operand1 = Number(resultsDisplay.innerText);
+        operatorSign = operator.id;
+        resultProcessDisplay.innerText = `${operand1} ${operator.id}`;
+        // resultsDisplay.innerText = '';
+    }
+    operator.disabled = true;
+    operatorTracker += 1;
+    enableDot();
+}
+
+function useSingleOperand(operator) {
+    let operand = Number(resultsDisplay.innerText);
+    if (operator.id === 'sqrt') {
+        resultProcessDisplay.innerText = `${operator.id} ${operand}`;
+    }
+    else {
+        resultProcessDisplay.innerText = `${operand}${operator.id}`;
+    }
+    operatorSign = operator.id;
+    resultsDisplay.innerText = operateSingleOperand(operatorSign, operand);
 }
 
 function evaluate() {
@@ -136,6 +149,11 @@ function operateDoubleOperand(operator, operand1, operand2) {
     else if (operator === 'x') return multiply(operand1, operand2);
     else if (operator === '/') return divide(operand1, operand2);
     return power(operand1, operand2);
+}
+
+function operateSingleOperand(operator, operand) {
+    if (operator === 'sqrt') return squareRoot(operand);
+    return factorial(operand);
 }
 
 function factorial(n) {
