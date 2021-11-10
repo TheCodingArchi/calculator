@@ -41,23 +41,42 @@ function displayNumber(number) {
         }
         if (evaluatorTracker > 0) {
             clearAll();
+            resultsDisplay.innerText = '';
         }
         if (operatorTracker > 0) {
-            enableOperator();
+            enableButtons(operatorsBtn);
+            enableButtons(numbersBtn);
+            clearEntry();
             resultsDisplay.innerText = '';
         }
         resultsDisplay.innerText += number.id;
         if (number.id === '.') {
             number.disabled = true;
         }
+        if (resultsDisplay.innerText.length > 13) {
+            disableButtons(numbersBtn);
+        }
     });
 }
 
-function enableOperator() {
-    operatorsBtn.forEach(operator => {
-        if (operator.disabled) {
-            operator.disabled = false;
+// function formatToPrecision(num) {
+//     if (num.toString().length >= 15) {
+//     return num.toPrecision(14);
+//     }
+//     return num;
+// }
+
+function enableButtons(buttons) {
+    buttons.forEach(button => {
+        if (button.disabled) {
+            button.disabled = false;
         }
+    });
+}
+
+function disableButtons(buttons) {
+    buttons.forEach(button => {
+        button.disabled = true;
     });
 }
 
@@ -68,11 +87,13 @@ function clearAll() {
     operatorTracker = 0;
     evaluatorTracker = 0;
     enableDot();
-    enableOperator();
+    enableButtons(operatorsBtn);
+    enableButtons(numbersBtn);
 }
 
 function clearEntry() {
     resultsDisplay.innerText = 0;
+    operatorTracker = 0;
 }
 
 function backspace() {
@@ -101,25 +122,31 @@ function activateOperator(operator) {
         else {
             useDoubleOperand(operator);
         }
+        disableButtons(operatorsBtn);
+        enableButtons(numbersBtn);
+        operatorTracker += 1;
     });
 }
 
 function useDoubleOperand(operator) {
-    if (operatorTracker > 0) {
+    if (operatorTracker > 0 && evaluatorTracker === 0) {
         operand2 = Number(resultsDisplay.innerText);
         resultsDisplay.innerText = operateDoubleOperand(operatorSign, operand1, operand2);
         resultProcessDisplay.innerText = ` ${resultsDisplay.innerText} ${operator.id}`;
         operand1 = resultsDisplay.innerText;
         operatorSign = operator.id;
     }
+    else if (operatorTracker > 0 && evaluatorTracker > 0) {
+        operand1 = resultsDisplay.innerText;
+        resultProcessDisplay.innerText = `${operand1} ${operator.id}`;
+        evaluatorTracker = 0;
+        equalsBtn.disabled = false;
+    }
     else {
         operand1 = Number(resultsDisplay.innerText);
         operatorSign = operator.id;
         resultProcessDisplay.innerText = `${operand1} ${operator.id}`;
-        // resultsDisplay.innerText = '';
     }
-    operator.disabled = true;
-    operatorTracker += 1;
     enableDot();
 }
 
@@ -133,6 +160,7 @@ function useSingleOperand(operator) {
     }
     operatorSign = operator.id;
     resultsDisplay.innerText = operateSingleOperand(operatorSign, operand);
+    evaluatorTracker += 1;
 }
 
 function evaluate() {
@@ -163,7 +191,7 @@ function factorial(n) {
 
 const sum = (a, b) => (a * 10 + b * 10) / 10;
 const subtract = (a, b) => a - b;
-const multiply = (a, b) => a * b;
+const multiply = (a, b) => ((a * 10) * (b * 10)) / 100;
 const divide = (a, b) => a / b;
 const power = (a, b) => Math.pow(a, b);
 const squareRoot = n => Math.sqrt(n);
