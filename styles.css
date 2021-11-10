@@ -49,12 +49,15 @@
 
   .result-display {
     color: #ffffff;
-    font-size: 3em;
+    font-size: 2.5em;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
   }
 
   .result-process-display {
     color: #6E6E6E;
-    font-size: 1.5em;
+    font-size: 1.2em;
   }
 
   .buttons-container {
