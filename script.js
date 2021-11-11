@@ -12,11 +12,14 @@ let result = '';
 let operatorTracker = 0;
 let evaluatorTracker = 0;
 
-numbersBtn.forEach(displayNumber);
-operatorsBtn.forEach(activateOperator);
-evaluator.addEventListener('click', evaluate)
+function initializeCalculator() {
+    numbersBtn.forEach(displayNumber);
+    operatorsBtn.forEach(activateOperator);
+    evaluator.addEventListener('click', evaluate)
 
-clearScreenContent();
+    clearScreenContent();
+    inputNegativeNumber();
+}
 
 function displayNumber(number) {
     number.addEventListener('click', () => {
@@ -32,6 +35,10 @@ function displayNumber(number) {
             enableButtons(numbersBtn);
             resultsDisplay.innerText = '';
             operatorTracker = 0;
+
+            if (plusMinusBtn.classList.contains('minus')) {
+                plusMinusBtn.classList.toggle('minus');
+            }
         }
         resultsDisplay.innerText += number.id;
         if (number.id === '.') {
@@ -41,6 +48,24 @@ function displayNumber(number) {
             disableButtons(numbersBtn);
         }
     });
+}
+
+function inputNegativeNumber() {
+    plusMinusBtn.addEventListener('click', () => {
+        if (plusMinusBtn.classList.contains('minus')) {
+            resultsDisplay.innerText = resultsDisplay.innerText.slice(1);
+            plusMinusBtn.classList.toggle('minus');
+        }
+        else {
+            resultsDisplay.innerText = prefixMinus(resultsDisplay.innerText);
+            plusMinusBtn.classList.toggle('minus');
+        }
+    });
+}
+
+function prefixMinus(str) {
+    let minus = '-';
+    return minus.concat(str);
 }
 
 function clearScreenContent() {
@@ -73,6 +98,9 @@ function clearAll() {
     enableDot();
     enableButtons(operatorsBtn);
     enableButtons(numbersBtn);
+    if (plusMinusBtn.classList.contains('minus')) {
+        plusMinusBtn.classList.toggle('minus');
+    }
 }
 
 function clearEntry() {
@@ -126,7 +154,7 @@ function enableDot() {
 }
 
 function useDoubleOperand(operator) {
-    if (operatorTracker === 0 && evaluatorTracker === 0 && operand1 != '') {
+    if (evaluatorTracker === 0 && operand1 != '') {
         operand2 = Number(resultsDisplay.innerText);
         result = operateDoubleOperand(operatorSign, operand1, operand2);
         resultsDisplay.innerText = formatToPrecision(result)
@@ -134,11 +162,11 @@ function useDoubleOperand(operator) {
         operand1 = Number(resultsDisplay.innerText);
         operatorSign = operator.id;
     }
-    else if (operatorTracker === 0 && evaluatorTracker > 0) {
+    else if (evaluatorTracker > 0) {
         operand1 = Number(resultsDisplay.innerText);
         resultProcessDisplay.innerText = `${operand1} ${operator.id}`;
         evaluatorTracker = 0;
-        equalsBtn.disabled = false;
+        evaluator.disabled = false;
     }
     else {
         operand1 = Number(resultsDisplay.innerText);
@@ -169,6 +197,7 @@ function evaluate() {
     resultsDisplay.innerText = formatToPrecision(result);
     evaluatorTracker += 1;
     evaluator.disabled = true;
+    plusMinusBtn.classList.toggle('minus');
 }
 
 function formatToPrecision(num) {
@@ -199,3 +228,5 @@ const multiply = (a, b) => ((a * 10) * (b * 10)) / 100;
 const divide = (a, b) => a / b;
 const power = (a, b) => Math.pow(a, b);
 const squareRoot = n => Math.sqrt(n);
+
+initializeCalculator();
