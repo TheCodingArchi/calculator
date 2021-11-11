@@ -3,19 +3,45 @@ const resultsDisplay = document.querySelector('.result-display');
 const resultProcessDisplay = document.querySelector('.result-process-display');
 const plusMinusBtn = document.querySelector('.plus-minus');
 const operatorsBtn = document.querySelectorAll('.operator');
-const equalsBtn = document.querySelector('.equals-sign');
+const evaluator = document.querySelector('.equals-sign');
 
 let operand1 = '';
 let operand2 = '';
 let operatorSign = '';
+let result = '';
 let operatorTracker = 0;
 let evaluatorTracker = 0;
 
 numbersBtn.forEach(displayNumber);
 operatorsBtn.forEach(activateOperator);
-equalsBtn.addEventListener('click', evaluate)
+evaluator.addEventListener('click', evaluate)
 
 clearScreenContent();
+
+function displayNumber(number) {
+    number.addEventListener('click', () => {
+        if (resultsDisplay.innerText[0] === '0') {
+            resultsDisplay.innerText = resultsDisplay.innerText.slice(1);
+        }
+        if (evaluatorTracker > 0) {
+            clearAll();
+            resultsDisplay.innerText = '';
+        }
+        if (operatorTracker > 0) {
+            enableButtons(operatorsBtn);
+            enableButtons(numbersBtn);
+            resultsDisplay.innerText = '';
+            operatorTracker = 0;
+        }
+        resultsDisplay.innerText += number.id;
+        if (number.id === '.') {
+            number.disabled = true;
+        }
+        if (resultsDisplay.innerText.length > 13) {
+            disableButtons(numbersBtn);
+        }
+    });
+}
 
 function clearScreenContent() {
     const clearBtns = document.querySelectorAll('.clear-buttons');
@@ -34,58 +60,16 @@ function clearScreenContent() {
     });
 }
 
-function displayNumber(number) {
-    number.addEventListener('click', () => {
-        if (resultsDisplay.innerText[0] === '0') {
-            resultsDisplay.innerText = resultsDisplay.innerText.slice(1);
-        }
-        if (evaluatorTracker > 0) {
-            clearAll();
-            resultsDisplay.innerText = '';
-        }
-        if (operatorTracker > 0) {
-            enableButtons(operatorsBtn);
-            enableButtons(numbersBtn);
-            clearEntry();
-            resultsDisplay.innerText = '';
-        }
-        resultsDisplay.innerText += number.id;
-        if (number.id === '.') {
-            number.disabled = true;
-        }
-        if (resultsDisplay.innerText.length > 13) {
-            disableButtons(numbersBtn);
-        }
-    });
-}
-
-// function formatToPrecision(num) {
-//     if (num.toString().length >= 15) {
-//     return num.toPrecision(14);
-//     }
-//     return num;
-// }
-
-function enableButtons(buttons) {
-    buttons.forEach(button => {
-        if (button.disabled) {
-            button.disabled = false;
-        }
-    });
-}
-
-function disableButtons(buttons) {
-    buttons.forEach(button => {
-        button.disabled = true;
-    });
-}
-
 function clearAll() {
-    equalsBtn.disabled = false;
+    evaluator.disabled = false;
     resultProcessDisplay.innerText = '';
     resultsDisplay.innerText = 0;
     operatorTracker = 0;
     evaluatorTracker = 0;
+    operand1 = '';
+    operand2 = '';
+    operatorSign = '';
+    result = '';
     enableDot();
     enableButtons(operatorsBtn);
     enableButtons(numbersBtn);
@@ -93,7 +77,6 @@ function clearAll() {
 
 function clearEntry() {
     resultsDisplay.innerText = 0;
-    operatorTracker = 0;
 }
 
 function backspace() {
@@ -102,16 +85,6 @@ function backspace() {
     if (length === 1) {
         resultsDisplay.textContent = 0;
     }
-}
-
-function enableDot() {
-    numbersBtn.forEach(number => {
-        if (number.id === '.') {
-            if (number.disabled) {
-                number.disabled = false;
-            }
-        }
-    });
 }
 
 function activateOperator(operator) {
@@ -128,16 +101,41 @@ function activateOperator(operator) {
     });
 }
 
+function enableButtons(buttons) {
+    buttons.forEach(button => {
+        if (button.disabled) {
+            button.disabled = false;
+        }
+    });
+}
+
+function disableButtons(buttons) {
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
+}
+
+function enableDot() {
+    numbersBtn.forEach(number => {
+        if (number.id === '.') {
+            if (number.disabled) {
+                number.disabled = false;
+            }
+        }
+    });
+}
+
 function useDoubleOperand(operator) {
-    if (operatorTracker > 0 && evaluatorTracker === 0) {
+    if (operatorTracker === 0 && evaluatorTracker === 0 && operand1 != '') {
         operand2 = Number(resultsDisplay.innerText);
-        resultsDisplay.innerText = operateDoubleOperand(operatorSign, operand1, operand2);
+        result = operateDoubleOperand(operatorSign, operand1, operand2);
+        resultsDisplay.innerText = formatToPrecision(result)
         resultProcessDisplay.innerText = ` ${resultsDisplay.innerText} ${operator.id}`;
-        operand1 = resultsDisplay.innerText;
+        operand1 = Number(resultsDisplay.innerText);
         operatorSign = operator.id;
     }
-    else if (operatorTracker > 0 && evaluatorTracker > 0) {
-        operand1 = resultsDisplay.innerText;
+    else if (operatorTracker === 0 && evaluatorTracker > 0) {
+        operand1 = Number(resultsDisplay.innerText);
         resultProcessDisplay.innerText = `${operand1} ${operator.id}`;
         evaluatorTracker = 0;
         equalsBtn.disabled = false;
@@ -159,16 +157,22 @@ function useSingleOperand(operator) {
         resultProcessDisplay.innerText = `${operand}${operator.id}`;
     }
     operatorSign = operator.id;
-    resultsDisplay.innerText = operateSingleOperand(operatorSign, operand);
+    result= operateSingleOperand(operatorSign, operand);
+    resultsDisplay.innerText = formatToPrecision(result);
     evaluatorTracker += 1;
 }
 
 function evaluate() {
     operand2 = Number(resultsDisplay.innerText);
-    resultProcessDisplay.innerText += ` ${operand2} ${equalsBtn.id}`;
-    resultsDisplay.innerText = operateDoubleOperand(operatorSign, operand1, operand2);
+    resultProcessDisplay.innerText += ` ${operand2} ${evaluator.id}`;
+    result = operateDoubleOperand(operatorSign, operand1, operand2);
+    resultsDisplay.innerText = formatToPrecision(result);
     evaluatorTracker += 1;
-    equalsBtn.disabled = true;
+    evaluator.disabled = true;
+}
+
+function formatToPrecision(num) {
+    return num.toString().length > 10 ? num.toPrecision(10) : num;
 }
 
 function operateDoubleOperand(operator, operand1, operand2) {
