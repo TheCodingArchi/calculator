@@ -113,3 +113,13 @@
       height: 50%;
     }
   }
+
+  @media screen and (max-width: 540px) {
+    .result-display {
+      font-size: 1em;
+    }
+
+    .result-process-display {
+      font-size: 0.5em;
+    }
+  }
