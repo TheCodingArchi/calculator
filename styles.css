@@ -19,8 +19,8 @@
   }
 
   .container {
-    width: calc(100vw / 4);
-    height: calc(100vh - 200px);
+    width: 30%;
+    height: 80%;
     padding: 0 4px 4px;
     background-color: #1F1F1F;
     box-shadow: 1px 1px 3px 3px rgba(0,0,0,0.2);
@@ -102,4 +102,14 @@
 
   .equals-sign:hover {
     background-color: #9b0644;
+  }
+
+  /* ===============================
+    MAIN STYLES
+  =============================== */
+  @media screen and (max-width: 1024px) {
+    .container {
+      width: 50%;
+      height: 50%;
+    }
   }
