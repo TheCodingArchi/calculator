@@ -134,7 +134,7 @@
       height: 50%;
     }
 
-    table, p {
+    table, body > p {
       display: none;
     }
   }
