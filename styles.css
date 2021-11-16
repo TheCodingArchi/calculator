@@ -13,9 +13,30 @@
   =============================== */
   body {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
     height: 100vh;
+  }
+  p {
+    text-align: center;
+  }
+  
+  table {
+    width: 50%;
+  }
+
+  th {
+    background-color: #005F73;
+    color: #ffffff;
+    padding: 5px 10px;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #94D2BD;
   }
 
   .container {
@@ -115,6 +136,19 @@
   }
 
   @media screen and (max-width: 540px) {
+    .container {
+      width: 80%;
+      height: 50%;
+    }
+
+    table {
+      width: 80%;
+    }
+
+    th, td {
+      font-size: 0.5em;
+    }
+
     .result-display {
       font-size: 1em;
     }

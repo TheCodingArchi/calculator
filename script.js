@@ -15,7 +15,10 @@ let evaluatorTracker = 0;
 function initializeCalculator() {
     numbersBtn.forEach(displayNumber);
     operatorsBtn.forEach(activateOperator);
-    evaluator.addEventListener('click', evaluate)
+    evaluator.addEventListener('click', evaluate);
+    window.addEventListener('keydown', (e) => {
+        getKeyboardInput(e.key);
+    });
 
     clearScreenContent();
     inputNegativeNumber();
@@ -23,8 +26,8 @@ function initializeCalculator() {
 
 function displayNumber(number) {
     number.addEventListener('click', () => {
-        if (resultsDisplay.innerText[0] === '0') {
-            resultsDisplay.innerText = resultsDisplay.innerText.slice(1);
+        if (resultsDisplay.innerText === '0') {
+            resultsDisplay.innerText = '';
         }
         if (evaluatorTracker > 0) {
             clearAll();
@@ -41,7 +44,7 @@ function displayNumber(number) {
             }
         }
         resultsDisplay.innerText += number.id;
-        if (number.id === '.') {
+        if (number.id === '0.') {
             number.disabled = true;
         }
         if (resultsDisplay.innerText.length > 13) {
@@ -123,7 +126,6 @@ function activateOperator(operator) {
         else {
             useDoubleOperand(operator);
         }
-        disableButtons(operatorsBtn);
         enableButtons(numbersBtn);
         operatorTracker += 1;
     });
@@ -164,6 +166,7 @@ function useDoubleOperand(operator) {
     }
     else if (evaluatorTracker > 0) {
         operand1 = Number(resultsDisplay.innerText);
+        operatorSign = operator.id;
         resultProcessDisplay.innerText = `${operand1} ${operator.id}`;
         evaluatorTracker = 0;
         evaluator.disabled = false;
@@ -173,6 +176,7 @@ function useDoubleOperand(operator) {
         operatorSign = operator.id;
         resultProcessDisplay.innerText = `${operand1} ${operator.id}`;
     }
+    disableButtons(operatorsBtn);
     enableDot();
 }
 
@@ -188,6 +192,7 @@ function useSingleOperand(operator) {
     result= operateSingleOperand(operatorSign, operand);
     resultsDisplay.innerText = formatToPrecision(result);
     evaluatorTracker += 1;
+    evaluator.disabled = true;
 }
 
 function evaluate() {
@@ -222,11 +227,41 @@ function factorial(n) {
     return n * factorial(n-1);
 }
 
+function divide(a, b) {
+    if (b === 0) {
+        clearAll();
+        resultsDisplay.innerText = 'Cannot divide by Zero';
+    }
+    else {
+        return a / b;
+    }
+}
+
 const sum = (a, b) => (a * 10 + b * 10) / 10;
 const subtract = (a, b) => a - b;
 const multiply = (a, b) => ((a * 10) * (b * 10)) / 100;
-const divide = (a, b) => a / b;
 const power = (a, b) => Math.pow(a, b);
 const squareRoot = n => Math.sqrt(n);
+
+// keyboard support
+function getKeyboardInput(key) {
+    const specialInput = {
+        'Enter': '=',
+        'Backspace': 'backspace',
+        'Delete': 'clear-all',
+        'ArrowLeft': 'clear-entry',
+        '$': 'sqrt',
+        '.': '0.',
+        'Tab': '-+',
+        '*': 'x'
+    };
+
+    if (key in specialInput) {
+        key = specialInput[key];
+    }
+
+    const button = document.querySelector(`button[id="${key}"]`);
+    button.click();
+}
 
 initializeCalculator();
