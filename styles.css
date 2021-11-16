@@ -133,20 +133,16 @@
       width: 50%;
       height: 50%;
     }
+
+    table, p {
+      display: none;
+    }
   }
 
   @media screen and (max-width: 540px) {
     .container {
       width: 80%;
       height: 50%;
-    }
-
-    table {
-      width: 80%;
-    }
-
-    th, td {
-      font-size: 0.5em;
     }
 
     .result-display {
