@@ -38,13 +38,13 @@ function displayNumber(number) {
             enableButtons(numbersBtn);
             resultsDisplay.innerText = '';
             operatorTracker = 0;
-
+    
             if (plusMinusBtn.classList.contains('minus')) {
                 plusMinusBtn.classList.toggle('minus');
             }
         }
         resultsDisplay.innerText += number.id;
-        if (number.id === '0.') {
+        if (number.id === '.') {
             number.disabled = true;
         }
         if (resultsDisplay.innerText.length > 13) {
@@ -246,12 +246,10 @@ const squareRoot = n => Math.sqrt(n);
 // keyboard support
 function getKeyboardInput(key) {
     const specialInput = {
-        'Enter': '=',
         'Backspace': 'backspace',
         'Delete': 'clear-all',
         'ArrowLeft': 'clear-entry',
         '$': 'sqrt',
-        '.': '0.',
         'Tab': '-+',
         '*': 'x'
     };
